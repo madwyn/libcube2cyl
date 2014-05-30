@@ -32,7 +32,7 @@ How to use
        In this case, the output image size will be calculated accordingly.
        There is another more detailed init function you can play with.
      */
-    algo.init(width, M_PI, 2.0*M_PI);
+    algo.init(640, M_PI, 2.0*M_PI);
     
     // Generate the mapping from panorama to cubic
     algo.genMap();
