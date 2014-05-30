@@ -1,23 +1,69 @@
 Cube2Cyl
 ========
 
-A panoramic lib, cubic to cylindrical projection conversion
+Cube2Cyl is a panoramic lib, for cubic to cylindrical projection conversion.
+
+Cube2Cyl is a single header file library, written in C++.
+
+
+Basic definitions
+-----------------
+
+The origin (0, 0) is at the upper left corner.
+
+The diagonal point is (width-1, height-1).
 
 Read more details of implementation here: http://www.wenyanan.com/index.php/cube2cyl/
+
 
 How to use
 ----------
 
-The Cube2Cyl library is a single header file library, written in C++. There is a demo application included as usage example.
 
-The library takes the following parameters:
+    // Create a instance of Cube2Cyl algorithm
+    Cube2Cyl algo;
 
-    Width of the panorama (must be lager than 1)
-    Height of the panorama (must be lager than 1)
-    Width of the square input (the input must have a ratio of 1:1)
-    View portion horizontally, [0.01, 2π]
-    View portion vertically, [0.01, π]
+    /*
+       Initialise the algorithm:
+         the width of each input is 640 pixel,
+         the vertical view portion is PI (180 degrees),
+         the horizontal view portion is 2*PI (360 degress).
 
-This library takes any valid parameter and deals the ratio changes automatically. You can use super sampling to generate accurate panorama.
+       In this case, the output image size will be calculated accordingly.
+       There is another more detailed init function you can play with.
+     */
+    algo.init(width, M_PI, 2.0*M_PI);
+    
+    // Generate the mapping from panorama to cubic
+    algo.genMap();
+    
+    // Access the dimension of the paranoma image
+    unsigned int panoWidth  = algo.pxPanoSizeH;
+    unsigned int panoHeight = algo.pxPanoSizeV;
+    
+    // The next step is to map the pixels from the paranoma back to the source images
+    for (i = 0; i < panoWidth; ++i)
+    {
+        for (j = 0; j < panoHeight; ++j)
+        {
+            // Get the corresponding position of (i, j)
+            coord = algo.getCoord(i, j);
 
-For the maximum performance, using a precomputed map is recommended rather than doing the calculation for each frame.
+            // Which side of the cube
+            coord->face;
+            // The x coordinate of the cube
+            coord->x;
+            // The y coordinate of the cube
+            coord->y;
+        }
+    }
+
+
+This library takes any valid parameter and deals the ratio changes automatically. You can use super sampling to generate accurate panorama and deal with anti-aliasing.
+
+There is a demo application included as usage example.
+
+License
+-------
+
+[MIT license](https://github.com/madwyn/Cube2Cyl/blob/master/LICENSE) meaning that you can use it freely for private or commercial purposes.
