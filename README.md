@@ -9,7 +9,7 @@ Cube2Cyl is a single header file library, written in C++.
 Basic definitions
 -----------------
 
-The origin (0, 0) is at the upper left corner.
+The origin (0, 0) position of the panorama will match the cubic images.
 
 The diagonal point is (width-1, height-1).
 
