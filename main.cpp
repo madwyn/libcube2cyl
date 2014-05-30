@@ -1,9 +1,11 @@
 #include "lib/qdbmp/qdbmp.h"
 #include "Cube2Cyl.h"
 
+#include <iostream>
+
 using namespace std;
 
-char* cubeNames[CUBE_FACE_NUM] =
+const char* cubeNames[CUBE_FACE_NUM] =
 {
     "top.bmp",
     "left.bmp",
@@ -18,16 +20,13 @@ int main()
     unsigned int i = 0;
     unsigned int j = 0;
 
-    int xx = 0;
-    int yy = 0;
-
     unsigned char rr;
     unsigned char gg;
     unsigned char bb;
 
     BMP *bmpCube[CUBE_FACE_NUM];
 
-    // read the 6 images
+    // Read the 6 input images
     for (i = 0; i < CUBE_FACE_NUM; ++i)
     {
         bmpCube[i] = BMP_ReadFile(cubeNames[i]);
@@ -38,43 +37,62 @@ int main()
         }
     }
 
-	/* Get image's dimensions */
+	// Get image's dimensions
 	int width  = BMP_GetWidth( bmpCube[0]);
 	int height = BMP_GetHeight(bmpCube[0]);
     int depth  = BMP_GetDepth( bmpCube[0]);
 
-    // the input images must be square
+    // The input images must be square
     if (width != height)
     {
         return 1;
     }
 
-    // map the 6 images to 3D space
+    // Create a instance of Cube2Cyl algorithm
     Cube2Cyl algo;
 
-    algo.init(width, M_PI, 2.0*M_PI);
+    /*
+       Initialise the algorithm:
+         the width of each input is 640 pixel,
+         the vertical view portion is PI (180 degrees),
+         the horizontal view portion is 2*PI (360 degress).
 
+       In this case, the output image size will be calculated accordingly.
+       There is another more detailed init function you can play with.
+     */
+    algo.init(width, M_PI, 2.0*M_PI);
+    // Generate the mapping from panorama to cubic
+    algo.genMap();
+
+    // Access the dimension of the panorama image
     unsigned int panoWidth  = algo.pxPanoSizeH;
     unsigned int panoHeight = algo.pxPanoSizeV;
 
-    // create panorama image
+    // Create the panorama output image
     BMP *output = BMP_Create(panoWidth, panoHeight, depth);
 
-    // process
+    const CUBE_COORD* coord = NULL;
+
+    // Map the pixels from the panorama back to the source image
     for (i = 0; i < panoWidth; ++i)
     {
         for (j = 0; j < panoHeight; ++j)
         {
-            algo.calXY(i, j, xx, yy);
+            // Get the corresponding position of (i, j)
+            coord = algo.getCoord(i, j);
 
-            BMP_GetPixelRGB(bmpCube[algo.cubeFaceId], xx, yy, &rr, &gg, &bb);
+            // Access the pixel
+            BMP_GetPixelRGB(bmpCube[coord->face], coord->x, coord->y, &rr, &gg, &bb);
 
+            // Write the pixel to the panorama
             BMP_SetPixelRGB(output, i, j, rr, gg, bb);
         }
     }
 
+    // Write the output file
     BMP_WriteFile(output, "pano.bmp");
 
+    // Release memory
     BMP_Free(output);
 
     for (i = 0; i < CUBE_FACE_NUM; ++i)

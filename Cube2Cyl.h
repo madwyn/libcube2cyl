@@ -1,7 +1,7 @@
 #ifndef CUBE2CYL_H_INCLUDED
 #define CUBE2CYL_H_INCLUDED
 
-/*  Cube2Cyl v1.0.0 - 2012-10-10
+/*  Cube2Cyl v1.0.2 - 2012-05-29
  *
  *  Cube2Cyl is a cubic projection to cylindrical projection conversion lib.
  *
@@ -29,7 +29,7 @@
  *  THE SOFTWARE.
  *
  ******************************************************************************/
-
+#include <stdlib.h>
 #include <math.h>
 
 #ifndef M_PI
@@ -50,6 +50,13 @@ enum CUBE_FACES
     CUBE_FACE_NUM
 };
 
+// the cubic image coordinates
+typedef struct {
+    unsigned char face;    // the face of the cube
+    double x;           // the x coordinate
+    double y;           // the y coordinate
+} CUBE_COORD;
+
 class Cube2Cyl
 {
 public:
@@ -67,17 +74,32 @@ public:
     unsigned int pxPanoSizeV;   /**< The vertical pixels of the panorama */
     unsigned int pxPanoSizeH;   /**< The horizontal pixels of the panorama */
 
-    unsigned int cubeFaceId;    /**< The cube face to be read */
+    //-------- to access the pixel
+    unsigned char cubeFaceId;    /**< The cube face to be read */
+    double        mappedX;       /**< The x coordinate mapped on the cube face */
+    double        mappedY;       /**< The y coordinate mapped on the cube face */
 
     void init(unsigned int pxInW, double radInV, double radInH);
     void init(unsigned int pxPanoH, unsigned int pxPanoV, unsigned int pxInW, double radInV, double radInH);
 
-    inline void calXY(const int& i, const int& j, int& xx, int& yy);
+    void genMap();
+
+    /** \brief Get the cubic coordinates
+     *
+     * \param x const unsigned int  The x coordinate of the panorama
+     * \param y const unsigned int  The y coordinate of the panorama
+     * \return const CUBE_COORD* const  The cubic coordinate pointer
+     *
+     */
+    const CUBE_COORD* const getCoord(const unsigned int x, const unsigned int y) const {
+        return &map[x*pxPanoSizeV + y];
+    }
 
     Cube2Cyl(void);
     ~Cube2Cyl(void);
 
 private:
+    inline void calXY(const int& i, const int& j);
 
     inline void calXYZ(const int& i, const int& j, double& x, double& y, double& z);
 
@@ -87,12 +109,12 @@ private:
 
     inline void calCubeFace(const double& theta, const double& phi);
 
-    inline void locateTop(   const double& x, const double& y, const double& z);
-    inline void locateDown(  const double& x, const double& y, const double& z);
-    inline void locateFront( const double& x, const double& y, const double& z);
-    inline void locateBack(  const double& x, const double& y, const double& z);
-    inline void locateLeft(  const double& x, const double& y, const double& z);
-    inline void locateRight( const double& x, const double& y, const double& z);
+    inline void locateTop(  const double& x, const double& y, const double& z);
+    inline void locateDown( const double& x, const double& y, const double& z);
+    inline void locateFront(const double& x, const double& y, const double& z);
+    inline void locateBack( const double& x, const double& y, const double& z);
+    inline void locateLeft( const double& x, const double& y, const double& z);
+    inline void locateRight(const double& x, const double& y, const double& z);
 
     // the helper functions
     inline bool cmpDoubleEqual(        const double& a, const double& b, const double& epsilon);
@@ -111,8 +133,6 @@ private:
     double normFactorY; /**< The normalisation factor for y */
 
     double sizeRatio;   /**< The size ratio of the mapped x and the actual diameter */
-    double mappedX;     /**< The x coordinate mapped on the cube face */
-    double mappedY;     /**< The y coordinate mapped on the cube face */
 
     double tX;          /**< x coordinate in 3D space */
     double tY;          /**< y coordinate in 3D space */
@@ -123,18 +143,20 @@ private:
 
     double phiThreshold;    /**< The threshold of phi, it separates the top, middle and down
      of the cube, which are the edges of the top and down surface */
+
+    CUBE_COORD* map;    /**< The map from panorama coordinates to cubic coordinates */
 };
 
 /** \brief  The initialise function of Cube2Cyl. This one takes fewer parameters, and will
  *          generate the width and height of the panorama automatically based on the input
  *
- * \param pxInW unsigned int    The width of the input image
- * \param radInV double         The radian of the view portion vertically, range [0.01, PI]
- * \param radInH double         The radian of the view portion horizontally, range [0.01, 2*PI]
+ * \param pxInW  const unsigned int The width of the input image
+ * \param radInV const double       The radian of the view portion vertically, range [0.01, PI]
+ * \param radInH const double       The radian of the view portion horizontally, range [0.01, 2*PI]
  * \return void
  *
  */
-void Cube2Cyl::init(unsigned int pxInW, double radInV, double radInH)
+void Cube2Cyl::init(const unsigned int pxInW, const double radInV, const double radInH)
 {
     unsigned int pxPanoH = (unsigned int)((radInH/M_PI_2) * (double)pxInW);
     unsigned int pxPanoV = (unsigned int)((radInV/M_PI_2) * (double)pxInW);
@@ -143,15 +165,15 @@ void Cube2Cyl::init(unsigned int pxInW, double radInV, double radInH)
 
 /** \brief  The initialise function of Cube2Cyl.
  *
- * \param pxPanoH unsigned int  The desired panorama width
- * \param pxPanoV unsigned int  The desired panorama height
- * \param pxInW   unsigned int  The width of the input image
- * \param radInV double         The radian of the view portion vertically, range [0.01, PI]
- * \param radInH double         The radian of the view portion horizontally, range [0.01, 2*PI]
+ * \param pxPanoH const unsigned int  The desired panorama width
+ * \param pxPanoV const unsigned int  The desired panorama height
+ * \param pxInW   const unsigned int  The width of the input image
+ * \param radInV  const double        The radian of the view portion vertically, range [0.01, PI]
+ * \param radInH  const double        The radian of the view portion horizontally, range [0.01, 2*PI]
  * \return void
  *
  */
-void Cube2Cyl::init(unsigned int pxPanoH, unsigned int pxPanoV, unsigned int pxInW, double radInV, double radInH)
+void Cube2Cyl::init(const unsigned int pxPanoH, const unsigned int pxPanoV, const unsigned int pxInW, const double radInV, const double radInH)
 {
     // check parameters
     if (   (pxInW   == 0)
@@ -187,6 +209,45 @@ void Cube2Cyl::init(unsigned int pxPanoH, unsigned int pxPanoV, unsigned int pxI
     normFactorY = radPanoV /  M_PI;
 }
 
+/** \brief Generate the map
+ * To access the cubic pixel coordinates: map[x*y]
+ *
+ * \return void
+ *
+ */
+void Cube2Cyl::genMap() {
+
+    if (NULL != map) {
+        free(map);
+    }
+
+    map = (CUBE_COORD* )malloc(pxPanoSizeV * pxPanoSizeH * sizeof(CUBE_COORD));
+
+    unsigned int pos = 0;
+
+    for (unsigned int x = 0; x < pxPanoSizeH; ++x) {
+        for (unsigned int y = 0; y < pxPanoSizeV; ++y) {
+            calXY(x, y);
+
+            map[pos  ].face = cubeFaceId;
+            map[pos  ].x    = mappedX;
+            map[pos++].y    = mappedY;
+        }
+    }
+}
+
+/** \brief Get the cubic coordinates
+ *
+ * \param x const unsigned int  The panorama x coordinate
+ * \param y const unsigned int  The panorama y coordinate
+ * \return CUBE_COORD
+ *
+
+const CUBE_COORD* Cube2Cyl::getCoord(const unsigned int x, const unsigned int y) const {
+    return map[x*pxPanoSizeH + y];
+}
+ */
+
 /** \brief Rotate the point for a given radian
  *
  * \param rad double
@@ -221,12 +282,10 @@ inline void Cube2Cyl::transDis(double dis, double& x, double& y)
  *
  * \param i const int&  The coordinate along the width axis
  * \param j const int&  The coordinate along the height axis
- * \param xx int&       The x coordinate on the cube face
- * \param yy int&       The y coordinate on the cube face
  * \return void
  *
  */
-inline void Cube2Cyl::calXY(const int& i, const int& j, int& xx, int& yy)
+inline void Cube2Cyl::calXY(const int& i, const int& j)
 {
     calXYZ(i, j, tX, tY, tZ);
 
@@ -267,9 +326,6 @@ inline void Cube2Cyl::calXY(const int& i, const int& j, int& xx, int& yy)
             break;
         }
     }
-
-    xx = (int) mappedX;
-    yy = (int) mappedY;
 }
 
 /** \brief Locate the point in the top image
@@ -590,19 +646,20 @@ Cube2Cyl::Cube2Cyl(void)
         pxPanoSizeV(0),
         pxPanoSizeH(0),
         cubeFaceId(CUBE_FRONT),
+        mappedX(0.0),
+        mappedY(0.0),
         normTheta(0.0),
         resCal(0.001),
         normFactorX(1.0),
         normFactorY(1.0),
         sizeRatio(1.0),
-        mappedX(0),
-        mappedY(0),
         tX(0.0),
         tY(0.0),
         tZ(0.0),
         tTheta(0.0),
         tPhi(0.0),
-        phiThreshold(0.0)
+        phiThreshold(0.0),
+        map(NULL)
 {
 
 }
@@ -614,7 +671,9 @@ Cube2Cyl::Cube2Cyl(void)
  */
 Cube2Cyl::~Cube2Cyl(void)
 {
-
+    if (NULL != map) {
+        free(map);
+    }
 }
 
 #endif // CUBE2CYL_H_INCLUDED
