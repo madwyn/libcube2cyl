@@ -20,7 +20,7 @@ How to use
 ----------
 
 
-    // Create a instance of Cube2Cyl algorithm
+    // Create an instance of Cube2Cyl algorithm
     Cube2Cyl algo;
 
     /*
