@@ -1,5 +1,5 @@
-#include "lib/qdbmp/qdbmp.h"
-#include "Cube2Cyl.h"
+#include "qdbmp/qdbmp.h"
+#include "../Cube2Cyl.h"
 
 #include <iostream>
 
@@ -7,12 +7,12 @@ using namespace std;
 
 const char* cubeNames[CUBE_FACE_NUM] =
 {
-    "top.bmp",
-    "left.bmp",
-    "front.bmp",
-    "right.bmp",
-    "back.bmp",
-    "down.bmp"
+    "TOP.bmp",
+    "LEFT.bmp",
+    "FRONT.bmp",
+    "RIGHT.bmp",
+    "BACK.bmp",
+    "DOWN.bmp"
 };
 
 int main()
@@ -90,7 +90,7 @@ int main()
     }
 
     // Write the output file
-    BMP_WriteFile(output, "pano.bmp");
+    BMP_WriteFile(output, "PANO.bmp");
 
     // Release memory
     BMP_Free(output);
