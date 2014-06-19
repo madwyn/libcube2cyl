@@ -1,13 +1,23 @@
-Cube2Cyl
-========
+# Cube2Cyl
 
 Cube2Cyl is a panoramic lib, for cubic to cylindrical projection conversion.
 
 Cube2Cyl is a single header file library, written in C++.
 
+A picture is worth a thousand words.
 
-Basic definitions
------------------
+The input:
+
+| |![alt text](http://paulbourke.net//geometry/transformationprojection/t_test1_00000.jpg)| | |
+| ------------- |:-------------:| -----:|--:|---:|
+|![alt text](http://paulbourke.net//geometry/transformationprojection/l_test1_00000.jpg)|![alt text](http://paulbourke.net//geometry/transformationprojection/f_test1_00000.jpg)|![alt text](http://paulbourke.net//geometry/transformationprojection/r_test1_00000.jpg)|![alt text](http://paulbourke.net//geometry/transformationprojection/b_test1_00000.jpg)|
+| |![alt text](http://paulbourke.net//geometry/transformationprojection/d_test1_00000.jpg)| | |
+
+The output:
+
+![alt text](http://paulbourke.net//geometry/transformationprojection/test1_00000.jpg)
+
+## Basic definitions
 
 The origin (0, 0) position of the panorama will match the cubic images.
 
@@ -16,8 +26,7 @@ The diagonal point is (width-1, height-1).
 Read more details of implementation here: http://www.wenyanan.com/cube2cyl/
 
 
-How to use
-----------
+## How to use
 
 
     // Create an instance of Cube2Cyl algorithm
@@ -62,8 +71,7 @@ How to use
 This library takes any valid parameter and deals the ratio changes automatically. You can use super sampling to generate accurate panorama and deal with anti-aliasing.
 
 
-Use the demo
-------------
+## Use the demo
 
 A demo application is included as an usage example.
 
@@ -72,13 +80,11 @@ To use the demo, first compile it. Then put the test images along with the execu
 The output file will be named as "PANO.bmp".
 
 
-Test images
------------
+## Test images
 
 There are two sets of test images, you are free to use these images for testing purposes.
 
 
-License
--------
+## License
 
 [MIT license](https://github.com/madwyn/Cube2Cyl/blob/master/LICENSE) meaning that you can use it freely for private or commercial purposes.
