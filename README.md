@@ -13,7 +13,7 @@ The origin (0, 0) position of the panorama will match the cubic images.
 
 The diagonal point is (width-1, height-1).
 
-Read more details of implementation here: http://www.wenyanan.com/index.php/cube2cyl/
+Read more details of implementation here: http://www.wenyanan.com/cube2cyl/
 
 
 How to use
@@ -61,7 +61,22 @@ How to use
 
 This library takes any valid parameter and deals the ratio changes automatically. You can use super sampling to generate accurate panorama and deal with anti-aliasing.
 
-There is a demo application included as usage example.
+
+Use the demo
+------------
+
+A demo application is included as an usage example.
+
+To use the demo, first compile it. Then put the test images along with the executable file and run.
+
+The output file will be named as "PANO.bmp".
+
+
+Test images
+-----------
+
+There are two sets of test images, you are free to use these images for testing purposes.
+
 
 License
 -------
