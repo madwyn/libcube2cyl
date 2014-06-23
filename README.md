@@ -2,7 +2,7 @@
 
 Cube2Cyl is a panoramic lib, for cubic to cylindrical projection conversion.
 
-Cube2Cyl is a single header file library, written in C++.
+Cube2Cyl is a single header file library, available in both C and C++.
 
 A picture is worth a thousand words.
 
@@ -27,6 +27,8 @@ Read more details of implementation here: http://www.wenyanan.com/cube2cyl/
 
 
 ## How to use
+
+Please check /demo/main.c for C version usage.
 
 
     // Create an instance of Cube2Cyl algorithm
