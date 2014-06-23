@@ -52,9 +52,9 @@ enum CUBE_FACES
 
 // the cubic image coordinates
 typedef struct {
-    unsigned char face;    // the face of the cube
-    double x;           // the x coordinate
-    double y;           // the y coordinate
+    CUBE_FACES face;    // the face of the cube
+    double     x;       // the x coordinate
+    double     y;       // the y coordinate
 } CUBE_COORD;
 
 class Cube2Cyl
@@ -67,20 +67,20 @@ public:
 
     double diameter;        /**< The diameter of the sphere */
 
-    double radPanoV;        /**< The vertical view portion */
-    double radPanoH;        /**< The horizontal view portion */
+    double rdPanoV;        /**< The vertical view portion */
+    double rdPanoH;        /**< The horizontal view portion */
 
     //-------- output information
     unsigned int pxPanoSizeV;   /**< The vertical pixels of the panorama */
     unsigned int pxPanoSizeH;   /**< The horizontal pixels of the panorama */
 
     //-------- to access the pixel
-    unsigned char cubeFaceId;    /**< The cube face to be read */
+    CUBE_FACES    cubeFaceId;    /**< The cube face to be read */
     double        mappedX;       /**< The x coordinate mapped on the cube face */
     double        mappedY;       /**< The y coordinate mapped on the cube face */
 
-    void init(unsigned int pxInW, double radInV, double radInH);
-    void init(unsigned int pxPanoH, unsigned int pxPanoV, unsigned int pxInW, double radInV, double radInH);
+    void init(unsigned int pxInW, double rdInV, double rdInH);
+    void init(unsigned int pxPanoH, unsigned int pxPanoV, unsigned int pxInW, double rdInV, double rdInH);
 
     void genMap();
 
@@ -104,8 +104,8 @@ private:
     inline void calXYZ(const int& i, const int& j, double& x, double& y, double& z);
 
     inline void calNormXY(const int& i, const int& j, double& x, double& y);
-    inline void calThetaAndPhi(double& x, double& y, double& theta, double& phi);
-    inline void calXyzFromThetaPhi(double& theta, double& phi, double& x, double& y, double& z);
+    inline void calThetaAndPhi(const double& x, const double& y, double& theta, double& phi);
+    inline void calXyzFromThetaPhi(const double& theta, const double& phi, double& x, double& y, double& z);
 
     inline void calCubeFace(const double& theta, const double& phi);
 
@@ -117,11 +117,12 @@ private:
     inline void locateRight(const double& x, const double& y, const double& z);
 
     // the helper functions
-    inline bool cmpDoubleEqual(        const double& a, const double& b, const double& epsilon);
-    inline bool cmpDoubleSmaller(      const double& a, const double& b, const double& epsilon);
-    inline bool cmpDoubleEqualSmaller( const double& a, const double& b, const double& epsilon);
-    inline bool Cube2CylcmpDoubleLager(const double& a, const double& b, const double& epsilon);
-    inline bool cmpDoubleEqualLager(   const double& a, const double& b, const double& epsilon);
+    inline bool cmpDoubleEqual(       const double& a, const double& b, const double& epsilon);
+    inline bool cmpDoubleSmaller(     const double& a, const double& b, const double& epsilon);
+    inline bool cmpDoubleEqualSmaller(const double& a, const double& b, const double& epsilon);
+    inline bool cmpDoubleLarger(      const double& a, const double& b, const double& epsilon);
+    inline bool cmpDoubleEqualLarger( const double& a, const double& b, const double& epsilon);
+    inline bool isDoubleInRange(const double& value, const double& small, const double& large, const double& epsilon);
 
     inline void rotRad(double rad, double& x, double& y, double& temp);
     inline void transDis(double dis, double& x, double& y);
@@ -151,16 +152,16 @@ private:
  *          generate the width and height of the panorama automatically based on the input
  *
  * \param pxInW  const unsigned int The width of the input image
- * \param radInV const double       The radian of the view portion vertically, range [0.01, PI]
- * \param radInH const double       The radian of the view portion horizontally, range [0.01, 2*PI]
+ * \param rdInV const double       The rdian of the view portion vertically, range [0.01, PI]
+ * \param rdInH const double       The radian of the view portion horizontally, range [0.01, 2*PI]
  * \return void
  *
  */
-void Cube2Cyl::init(const unsigned int pxInW, const double radInV, const double radInH)
+void Cube2Cyl::init(const unsigned int pxInW, const double rdInV, const double rdInH)
 {
-    unsigned int pxPanoH = (unsigned int)((radInH/M_PI_2) * (double)pxInW);
-    unsigned int pxPanoV = (unsigned int)((radInV/M_PI_2) * (double)pxInW);
-    init(pxPanoH, pxPanoV, pxInW, radInV, radInH);
+    unsigned int pxPanoH = (unsigned int)((rdInH/M_PI_2) * (double)pxInW);
+    unsigned int pxPanoV = (unsigned int)((rdInV/M_PI_2) * (double)pxInW);
+    init(pxPanoH, pxPanoV, pxInW, rdInV, rdInH);
 }
 
 /** \brief  The initialise function of Cube2Cyl.
@@ -168,12 +169,12 @@ void Cube2Cyl::init(const unsigned int pxInW, const double radInV, const double 
  * \param pxPanoH const unsigned int  The desired panorama width
  * \param pxPanoV const unsigned int  The desired panorama height
  * \param pxInW   const unsigned int  The width of the input image
- * \param radInV  const double        The radian of the view portion vertically, range [0.01, PI]
- * \param radInH  const double        The radian of the view portion horizontally, range [0.01, 2*PI]
+ * \param rdInV  const double        The radian of the view portion vertically, range [0.01, PI]
+ * \param rdInH  const double        The radian of the view portion horizontally, range [0.01, 2*PI]
  * \return void
  *
  */
-void Cube2Cyl::init(const unsigned int pxPanoH, const unsigned int pxPanoV, const unsigned int pxInW, const double radInV, const double radInH)
+void Cube2Cyl::init(const unsigned int pxPanoH, const unsigned int pxPanoV, const unsigned int pxInW, const double rdInV, const double rdInH)
 {
     // check parameters
     if (   (pxInW   == 0)
@@ -184,8 +185,8 @@ void Cube2Cyl::init(const unsigned int pxPanoH, const unsigned int pxPanoV, cons
     }
 
     // check the view portion
-    if (   ((radInV < 0.01) || (radInV > M_PI))
-        || ((radInH < 0.01) || (radInH > (M_PI * 2.0))))
+    if (   ((rdInV < 0.01) || (rdInV > M_PI))
+        || ((rdInH < 0.01) || (rdInH > (M_PI * 2.0))))
     {
         return;
     }
@@ -193,8 +194,8 @@ void Cube2Cyl::init(const unsigned int pxPanoH, const unsigned int pxPanoV, cons
     pxCamV = pxInW;
     pxCamH = pxInW;
 
-    radPanoV = radInV;
-    radPanoH = radInH;
+    rdPanoV = rdInV;
+    rdPanoH = rdInH;
 
     pxPanoSizeH = pxPanoH;
     pxPanoSizeV = pxPanoV;
@@ -205,8 +206,8 @@ void Cube2Cyl::init(const unsigned int pxPanoH, const unsigned int pxPanoV, cons
     resCal = M_PI_4 / (double)pxCamH / 10.0;
 
     // the normalisation factors
-    normFactorX = radPanoH / (M_PI * 2);
-    normFactorY = radPanoV /  M_PI;
+    normFactorX = rdPanoH / (M_PI * 2);
+    normFactorY = rdPanoV /  M_PI;
 }
 
 /** \brief Generate the map
@@ -469,22 +470,19 @@ inline void Cube2Cyl::calCubeFace(const double& theta, const double& phi)
 {
     // Looking at the cube from top down
     // FRONT zone
-    if (   cmpDoubleEqualLager(theta, -M_PI_4, resCal)
-        && cmpDoubleSmaller(theta, M_PI_4, resCal))
+    if (isDoubleInRange(theta, -M_PI_4, M_PI_4, resCal))
     {
         cubeFaceId = CUBE_FRONT;
         normTheta  = theta;
     }
     // LEFT zone
-    else if (   cmpDoubleEqualLager(theta, -(M_PI_2 + M_PI_4), resCal)
-             && cmpDoubleSmaller(theta, -M_PI_4, resCal))
+    else if (isDoubleInRange(theta, -(M_PI_2 + M_PI_4), -M_PI_4, resCal))
     {
         cubeFaceId = CUBE_LEFT;
         normTheta  = theta + M_PI_2;
     }
     // RIGHT zone
-    else if (   cmpDoubleEqualLager(theta, M_PI_4, resCal)
-             && cmpDoubleSmaller(theta, M_PI_2 + M_PI_4, resCal))
+    else if (isDoubleInRange(theta, M_PI_4, M_PI_2 + M_PI_4, resCal))
     {
         cubeFaceId = CUBE_RIGHT;
         normTheta  = theta - M_PI_2;
@@ -549,7 +547,7 @@ inline void Cube2Cyl::calNormXY(const int& i, const int& j, double& x, double& y
     // y = 1.0 - (2.0*j)/pxPanoSizeV;
 }
 
-inline void Cube2Cyl::calThetaAndPhi(double& x, double& y, double& theta, double& phi)
+inline void Cube2Cyl::calThetaAndPhi(const double& x, const double& y, double& theta, double& phi)
 {
     theta = x * M_PI;
     phi   = y * M_PI_2;
@@ -557,7 +555,7 @@ inline void Cube2Cyl::calThetaAndPhi(double& x, double& y, double& theta, double
     // phi = asin(y);
 }
 
-inline void Cube2Cyl::calXyzFromThetaPhi(double& theta, double& phi, double& x, double& y, double& z)
+inline void Cube2Cyl::calXyzFromThetaPhi(const double& theta, const double& phi, double& x, double& y, double& z)
 {
     x = cos(phi) * cos(theta);
     y = sin(phi);
@@ -613,7 +611,7 @@ inline bool Cube2Cyl::cmpDoubleEqualSmaller(const double& a, const double& b, co
  * \return bool
  *
  */
-inline bool Cube2Cyl::Cube2CylcmpDoubleLager(const double& a, const double& b, const double& epsilon)
+inline bool Cube2Cyl::cmpDoubleLarger(const double& a, const double& b, const double& epsilon)
 {
     return ((a - b) > 0) && (!cmpDoubleEqual(a, b, epsilon));
 }
@@ -626,9 +624,24 @@ inline bool Cube2Cyl::Cube2CylcmpDoubleLager(const double& a, const double& b, c
  * \return bool
  *
  */
-inline bool Cube2Cyl::cmpDoubleEqualLager(const double& a, const double& b, const double& epsilon)
+inline bool Cube2Cyl::cmpDoubleEqualLarger(const double& a, const double& b, const double& epsilon)
 {
     return ((a - b) > 0) || Cube2Cyl::cmpDoubleEqual(a, b, epsilon);
+}
+
+/** \brief Test if value in in the range of [small, large)
+ *
+ * \param value   const double&
+ * \param small   const double&
+ * \param large   const double&
+ * \param epsilon const double&
+ * \return bool
+ *
+ */
+inline bool Cube2Cyl::isDoubleInRange(const double& value, const double& small, const double& large, const double& epsilon)
+{
+    return    cmpDoubleEqualLarger(value, small, epsilon)
+           && cmpDoubleSmaller(    value, large, epsilon);
 }
 
 
@@ -641,8 +654,8 @@ Cube2Cyl::Cube2Cyl(void)
     :   pxCamV(0),
         pxCamH(0),
         diameter(0.0),
-        radPanoV(0.0),
-        radPanoH(0.0),
+        rdPanoV(0.0),
+        rdPanoH(0.0),
         pxPanoSizeV(0),
         pxPanoSizeH(0),
         cubeFaceId(CUBE_FRONT),
