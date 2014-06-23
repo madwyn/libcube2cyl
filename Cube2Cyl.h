@@ -109,12 +109,7 @@ private:
 
     inline void calCubeFace(const double& theta, const double& phi);
 
-    inline void locateTop(  const double& x, const double& y, const double& z);
-    inline void locateDown( const double& x, const double& y, const double& z);
-    inline void locateFront(const double& x, const double& y, const double& z);
-    inline void locateBack( const double& x, const double& y, const double& z);
-    inline void locateLeft( const double& x, const double& y, const double& z);
-    inline void locateRight(const double& x, const double& y, const double& z);
+    inline void locate(const double& axis, const double& px, const double& py, const double& rad);
 
     // the helper functions
     inline bool cmpDoubleEqual(       const double& a, const double& b, const double& epsilon);
@@ -294,32 +289,32 @@ inline void Cube2Cyl::calXY(const int& i, const int& j)
     {
         case CUBE_TOP:
         {
-            locateTop(tX, tY, tZ);
+            locate(tY, tZ, tX, M_PI);
             break;
         }
         case CUBE_DOWN:
         {
-            locateDown(tX, tY, tZ);
+            locate(tY, tX, tZ, -M_PI_2);
             break;
         }
         case CUBE_LEFT:
         {
-            locateLeft(tX, tY, tZ);
+            locate(tZ, tX, tY, M_PI);
             break;
         }
         case CUBE_RIGHT:
         {
-            locateRight(tX, tY, tZ);
+            locate(tZ, tY, tX, M_PI_2);
             break;
         }
         case CUBE_FRONT:
         {
-            locateFront(tX, tY, tZ);
+            locate(tX, tZ, tY, 0.0);
             break;
         }
         case CUBE_BACK:
         {
-            locateBack(tX, tY, tZ);
+            locate(tX, tY, tZ, -M_PI_2);
             break;
         }
         default:
@@ -329,131 +324,23 @@ inline void Cube2Cyl::calXY(const int& i, const int& j)
     }
 }
 
-/** \brief Locate the point in the top image
+/** \brief Locate the point in the cubic image
  *
- * \param x const double&
- * \param y const double&
- * \param z const double&
+ * \param axis const double& The sphere coordinate along the axis
+ * \param px   const double&
+ * \param py   const double&
+ * \param rad  const double&
  * \return void
  *
  */
-inline void Cube2Cyl::locateTop(const double& x, const double& y, const double& z)
-{
-    sizeRatio = diameter / y;
+inline void Cube2Cyl::locate(const double& axis, const double& px, const double& py, const double& rad) {
+    sizeRatio = diameter / axis;
 
-    mappedX = sizeRatio * z;
-    mappedY = sizeRatio * x;
+    mappedX = sizeRatio * px;
+    mappedY = sizeRatio * py;
 
-    // rotate pi
-    rotRad(M_PI, mappedX, mappedY, sizeRatio);
-
-    // translate
-    transDis(diameter, mappedX, mappedY);
-}
-
-/** \brief Locate the point in the down image
- *
- * \param x const double&
- * \param y const double&
- * \param z const double&
- * \return void
- *
- */
-inline void Cube2Cyl::locateDown(const double& x, const double& y, const double& z)
-{
-    sizeRatio = diameter / y;
-
-    mappedX = sizeRatio * x;
-    mappedY = sizeRatio * z;
-
-    // rotate -pi
-    rotRad(-M_PI_2, mappedX, mappedY, sizeRatio);
-
-    // translate
-    transDis(diameter, mappedX, mappedY);
-}
-
-/** \brief Locate the point in the front image
- *
- * \param x const double&
- * \param y const double&
- * \param z const double&
- * \return void
- *
- */
-inline void Cube2Cyl::locateFront(const double& x, const double& y, const double& z)
-{
-    sizeRatio = diameter / x;
-
-    mappedX = sizeRatio * z;
-    mappedY = sizeRatio * y;
-
-    // translate
-    transDis(diameter, mappedX, mappedY);
-}
-
-/** \brief Locate the point in the back image
- *
- * \param x const double&
- * \param y const double&
- * \param z const double&
- * \return void
- *
- */
-inline void Cube2Cyl::locateBack(const double& x, const double& y, const double& z)
-{
-    sizeRatio = diameter / x;
-
-    mappedX = sizeRatio * y;
-    mappedY = sizeRatio * z;
-
-    // rotate -pi
-    rotRad(-M_PI_2, mappedX, mappedY, sizeRatio);
-
-    // translate
-    transDis(diameter, mappedX, mappedY);
-}
-
-
-/** \brief Locate the point in the left image
- *
- * \param x const double&
- * \param y const double&
- * \param z const double&
- * \return void
- *
- */
-inline void Cube2Cyl::locateLeft(const double& x, const double& y, const double& z)
-{
-    sizeRatio = diameter / z;
-
-    mappedX = sizeRatio * x;
-    mappedY = sizeRatio * y;
-
-    // rotate pi
-    rotRad(M_PI, mappedX, mappedY, sizeRatio);
-
-    // translate
-    transDis(diameter, mappedX, mappedY);
-}
-
-/** \brief Locate the point in the right image
- *
- * \param x const double&
- * \param y const double&
- * \param z const double&
- * \return void
- *
- */
-inline void Cube2Cyl::locateRight(const double& x, const double& y, const double& z)
-{
-    sizeRatio = diameter / z;
-
-    mappedX = sizeRatio * y;
-    mappedY = sizeRatio * x;
-
-    // rotate pi/2
-    rotRad(M_PI_2, mappedX, mappedY, sizeRatio);
+    // rotate
+    rotRad(rad, mappedX, mappedY, sizeRatio);
 
     // translate
     transDis(diameter, mappedX, mappedY);
