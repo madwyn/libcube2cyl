@@ -3,7 +3,6 @@
 
 #include <stdlib.h>     // required for malloc/free
 #include <math.h>
-#include <stdio.h>
 
 #ifndef M_PI
 #define M_PI        3.14159265358979323846
@@ -166,8 +165,6 @@ cc_init_full(struct  cc_context *ctx,       const unsigned int px_in_w,
     // check the view portion
     if (   !__cc_db_in_range_o_c(rd_view_v, 0.001, M_PI,     0.001)
         || !__cc_db_in_range_o_c(rd_view_h, 0.001, M_PI*2.0, 0.001)) {
-        double x = M_PI*2.0;
-        printf("M_PI*2.0=%f\n", x);
         return;
     }
 
