@@ -1,5 +1,5 @@
 #include "qdbmp/qdbmp.h"
-#include "../Cube2Cyl.h"
+#include "../Cube2Cyl.hpp"
 
 #include <iostream>
 
