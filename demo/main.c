@@ -2,9 +2,7 @@
 #include "qdbmp/qdbmp.h"
 
 int main() {
-
-    static const char* cubeNames[CC_FACE_NUM] =
-    {
+    static const char* cubeNames[CC_FACE_NUM] = {
         "TOP.bmp",
         "LEFT.bmp",
         "FRONT.bmp",
@@ -24,8 +22,8 @@ int main() {
 
     BMP *bmpCube[CC_FACE_NUM];
 
-	int width  = 0;
-	int height = 0;
+    int width  = 0;
+    int height = 0;
     int depth  = 0;
 
     BMP *output = NULL;
@@ -44,9 +42,9 @@ int main() {
         }
     }
 
-	// Get image's dimensions
-	width  = BMP_GetWidth( bmpCube[0]);
-	height = BMP_GetHeight(bmpCube[0]);
+    // Get image's dimensions
+    width  = BMP_GetWidth( bmpCube[0]);
+    height = BMP_GetHeight(bmpCube[0]);
     depth  = BMP_GetDepth( bmpCube[0]);
 
     // The input images must be square
@@ -76,10 +74,8 @@ int main() {
     output = BMP_Create(pano_width, pano_height, depth);
 
     // Map the pixels from the panorama back to the source image
-    for (i = 0; i < pano_width; ++i)
-    {
-        for (j = 0; j < pano_height; ++j)
-        {
+    for (i = 0; i < pano_width; ++i) {
+        for (j = 0; j < pano_height; ++j) {
             // Get the corresponding position of (i, j)
             coord = cc_get_coord(&ctx, i, j);
 
@@ -97,8 +93,7 @@ int main() {
     // Release memory
     BMP_Free(output);
 
-    for (i = 0; i < CC_FACE_NUM; ++i)
-    {
+    for (i = 0; i < CC_FACE_NUM; ++i) {
         BMP_Free(bmpCube[i]);
     }
 
