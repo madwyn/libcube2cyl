@@ -30,7 +30,7 @@ Read more details of implementation here: http://www.wenyanan.com/cube2cyl/
 
 Please check /demo/main.c for C version usage.
 
-
+```c++
     // Create an instance of Cube2Cyl algorithm
     Cube2Cyl algo;
 
@@ -68,7 +68,7 @@ Please check /demo/main.c for C version usage.
             coord->y;
         }
     }
-
+```
 
 This library takes any valid parameter and deals the ratio changes automatically. You can use super sampling to generate accurate panorama and deal with anti-aliasing.
 
@@ -84,7 +84,7 @@ The output file will be named as "PANO.bmp".
 
 ## Test images
 
-There are two sets of test images, you are free to use these images for testing purposes.
+There are two sets of images for testing, you are free to use these images for testing purposes.
 
 
 ## License
