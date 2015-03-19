@@ -10,6 +10,12 @@
 #define M_PI_4      0.78539816339744830962
 #endif
 
+#ifdef _MSC_VER
+    #ifndef inline
+        #define inline __inline
+    #endif
+#endif
+
 // defines the faces of a cube
 enum cc_face {
     CC_TOP = 0,
@@ -29,7 +35,6 @@ struct cc_coord {
 };
 
 struct cc_context {
-
     //-------- input information
     unsigned int px_cam_h;  /**< The horizontal pixel of a camera */
     unsigned int px_cam_v;  /**< The vertical pixel of a camera */
@@ -442,7 +447,6 @@ __cc_cal_cube_xy(struct cc_context *ctx, const unsigned int x, const unsigned in
  */
 static inline void
 cc_gen_map(struct cc_context *ctx) {
-
     unsigned int x, y, pos;
 
     if (NULL != ctx->map) {

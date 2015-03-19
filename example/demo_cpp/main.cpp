@@ -1,12 +1,11 @@
-#include "qdbmp/qdbmp.h"
-#include "../Cube2Cyl.hpp"
+#include <Cube2Cyl.hpp>
+#include <qdbmp.h>
 
 #include <iostream>
 
 using namespace std;
 
-const char* cubeNames[CUBE_FACE_NUM] =
-{
+const char* cubeNames[CUBE_FACE_NUM] = {
     "TOP.bmp",
     "LEFT.bmp",
     "FRONT.bmp",
@@ -15,8 +14,7 @@ const char* cubeNames[CUBE_FACE_NUM] =
     "DOWN.bmp"
 };
 
-int main()
-{
+int main() {
     unsigned int i = 0;
     unsigned int j = 0;
 
@@ -27,24 +25,21 @@ int main()
     BMP *bmpCube[CUBE_FACE_NUM];
 
     // Read the 6 input images
-    for (i = 0; i < CUBE_FACE_NUM; ++i)
-    {
+    for (i = 0; i < CUBE_FACE_NUM; ++i) {
         bmpCube[i] = BMP_ReadFile(cubeNames[i]);
 
-        if (BMP_GetError() != BMP_OK)
-        {
+        if (BMP_OK != BMP_GetError()) {
             return 1;
         }
     }
 
 	// Get image's dimensions
-	int width  = BMP_GetWidth( bmpCube[0]);
-	int height = BMP_GetHeight(bmpCube[0]);
-    int depth  = BMP_GetDepth( bmpCube[0]);
+	unsigned int   width  = (unsigned int)BMP_GetWidth( bmpCube[0]);
+    unsigned int   height = (unsigned int)BMP_GetHeight(bmpCube[0]);
+    unsigned short depth  = BMP_GetDepth(bmpCube[0]);
 
     // The input images must be square
-    if (width != height)
-    {
+    if (width != height) {
         return 1;
     }
 
@@ -74,15 +69,13 @@ int main()
     const CUBE_COORD* coord = NULL;
 
     // Map the pixels from the panorama back to the source image
-    for (i = 0; i < panoWidth; ++i)
-    {
-        for (j = 0; j < panoHeight; ++j)
-        {
+    for (i = 0; i < panoWidth; ++i) {
+        for (j = 0; j < panoHeight; ++j) {
             // Get the corresponding position of (i, j)
             coord = algo.getCoord(i, j);
 
             // Access the pixel
-            BMP_GetPixelRGB(bmpCube[coord->face], coord->x, coord->y, &rr, &gg, &bb);
+            BMP_GetPixelRGB(bmpCube[coord->face], (unsigned long)coord->x, (unsigned long)coord->y, &rr, &gg, &bb);
 
             // Write the pixel to the panorama
             BMP_SetPixelRGB(output, i, j, rr, gg, bb);
@@ -95,8 +88,7 @@ int main()
     // Release memory
     BMP_Free(output);
 
-    for (i = 0; i < CUBE_FACE_NUM; ++i)
-    {
+    for (i = 0; i < CUBE_FACE_NUM; ++i) {
         BMP_Free(bmpCube[i]);
     }
 
