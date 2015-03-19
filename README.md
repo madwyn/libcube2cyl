@@ -1,8 +1,8 @@
-# Cube2Cyl
+# libcube2cyl
 
-Cube2Cyl is a panoramic lib, for cubic to cylindrical projection conversion.
+libcube2cyl is a panoramic lib, for cubic to cylindrical projection conversion.
 
-Cube2Cyl is a single header file library, available in both C and C++.
+libcube2cyl is a single header file library, available in both C and C++.
 
 A picture is worth a thousand words.
 
@@ -28,7 +28,7 @@ Read more details of implementation here: http://www.wenyanan.com/cube2cyl/
 
 ## How to use
 
-Please check /demo/main.c for C version usage.
+Please check /example/demo_c for C version usage.
 
 ```c++
     // Create an instance of Cube2Cyl algorithm
@@ -53,10 +53,8 @@ Please check /demo/main.c for C version usage.
     unsigned int panoHeight = algo.pxPanoSizeV;
     
     // The next step is to map the pixels from the paranoma back to the source images
-    for (i = 0; i < panoWidth; ++i)
-    {
-        for (j = 0; j < panoHeight; ++j)
-        {
+    for (i = 0; i < panoWidth; ++i) {
+        for (j = 0; j < panoHeight; ++j) {
             // Get the corresponding position of (i, j)
             coord = algo.getCoord(i, j);
 
@@ -73,11 +71,23 @@ Please check /demo/main.c for C version usage.
 This library takes any valid parameter and deals the ratio changes automatically. You can use super sampling to generate accurate panorama and deal with anti-aliasing.
 
 
-## Use the demo
+## Building
 
-A demo application is included as an usage example.
+You don't need to build the project to use libcube2cyl. The building is only for the examples.
 
-To use the demo, first compile it. Then put the test images along with the executable file and run.
+CMake scripts are provided for easy compilation.
+
+Please install CMake first, then you can find the build scritps in `/build`.
+
+For Linux: run `buil.sh`.
+The ouput will be put in `/build/linux/fin`.
+
+For Win32 with MSVS: you need to start `Native Tools Command Prompt` first, then run `build.bat`.
+The ouput will be put in `/build/win32_msc/fin`.
+
+You can find the compiled binaries in `/fin/bin`.
+
+To use the demo, put the test images along with the executable file and run.
 
 The output file will be named as "PANO.bmp".
 
