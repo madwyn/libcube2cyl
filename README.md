@@ -79,7 +79,7 @@ CMake scripts are provided for easy compilation.
 
 Please install CMake first, then you can find the build scritps in `/build`.
 
-For Linux: run `buil.sh`.
+For Linux: run `build.sh`.
 The ouput will be put in `/build/linux/fin`.
 
 For Win32 with MSVS: you need to start `Native Tools Command Prompt` first, then run `build.bat`.
