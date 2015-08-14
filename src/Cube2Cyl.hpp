@@ -8,7 +8,7 @@
  *  Homepage: http://www.wenyanan.com/cube2cyl/
  *  Please check the web page for further information, upgrades and bug fixes.
  *
- *  Copyright (c) 2012-2014 Yanan Wen (WenYananWork@gmail.com)
+ *  Copyright (c) 2012-2014 Yanan Wen (madwyn+src@gmail.com)
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal

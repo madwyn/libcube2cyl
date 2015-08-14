@@ -96,6 +96,9 @@ The output file will be named as "PANO.bmp".
 
 There are two sets of images for testing, you are free to use these images for testing purposes.
 
+## Contact
+
+If you find any problems please raise issues on github. If you have other questions, you can also send me an email: madwyn+src at gmail dot com.
 
 ## License
 
