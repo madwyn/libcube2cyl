@@ -296,11 +296,11 @@ __cc_cal_cube_face(struct cc_context *ctx) {
     // find out which segment the line strikes to
     ctx->phi_threshold = atan2(1.0, 1.0 / cos(ctx->theta_norm));
 
-    // in the top segment
+    // in the bottom segment
     if (ctx->t_phi > ctx->phi_threshold) {
         ctx->cube_face = CC_DOWN;
     }
-    // in the bottom segment
+    // in the top segment
     else if (ctx->t_phi < -ctx->phi_threshold) {
         ctx->cube_face = CC_TOP;
     }
