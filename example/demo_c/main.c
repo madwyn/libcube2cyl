@@ -56,7 +56,7 @@ int main() {
        Initialise the algorithm:
          the width of each input is 640 pixel,
          the vertical view portion is PI (180 degrees),
-         the horizontal view portion is 2*PI (360 degress).
+         the horizontal view portion is 2*PI (360 degrees).
 
        In this case, the output image size will be calculated accordingly.
        There is another more detailed init function you can play with.
