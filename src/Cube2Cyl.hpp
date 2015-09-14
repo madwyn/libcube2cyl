@@ -38,6 +38,9 @@
 #define M_PI_4      0.78539816339744830962
 #endif
 
+// sphere radius
+#define S_RADIUS    1.0
+
 // defines the faces of a cube
 enum CUBE_FACES {
     CUBE_TOP = 0,
@@ -62,10 +65,10 @@ public:
     unsigned int pxCamV;    /**< The vertical pixel of a camera */
     unsigned int pxCamH;    /**< The horizontal pixel of a camera */
 
-    double diameter;        /**< The diameter of the sphere */
+    double radius;          /**< The radius of the sphere */
 
-    double rdPanoV;        /**< The vertical view portion */
-    double rdPanoH;        /**< The horizontal view portion */
+    double rdPanoV;         /**< The vertical view portion */
+    double rdPanoH;         /**< The horizontal view portion */
 
     //-------- output information
     unsigned int pxPanoSizeV;   /**< The vertical pixels of the panorama */
@@ -125,7 +128,7 @@ private:
     double normFactorX; /**< The normalisation factor for x */
     double normFactorY; /**< The normalisation factor for y */
 
-    double sizeRatio;   /**< The size ratio of the mapped x and the actual diameter */
+    double sizeRatio;   /**< The size ratio of the mapped x and the actual radius */
 
     double tX;          /**< x coordinate in 3D space */
     double tY;          /**< y coordinate in 3D space */
@@ -188,7 +191,7 @@ void Cube2Cyl::init(const unsigned int pxPanoH, const unsigned int pxPanoV, cons
     pxPanoSizeH = pxPanoH;
     pxPanoSizeV = pxPanoV;
 
-    diameter = ((double)pxInW) / 2.0;
+    radius = ((double)pxInW) / 2.0;
 
     // the actual calculation resolution is 10 times bigger than the texture resolution
     resCal = M_PI_4 / (double)pxCamH / 10.0;
@@ -316,7 +319,7 @@ inline void Cube2Cyl::calXY(const int& i, const int& j) {
  *
  */
 inline void Cube2Cyl::locate(const double& axis, const double& px, const double& py, const double& rad) {
-    sizeRatio = diameter / axis;
+    sizeRatio = radius / axis;
 
     mappedX = sizeRatio * px;
     mappedY = sizeRatio * py;
@@ -325,7 +328,7 @@ inline void Cube2Cyl::locate(const double& axis, const double& px, const double&
     rotRad(rad, mappedX, mappedY, sizeRatio);
 
     // translate
-    transDis(diameter, mappedX, mappedY);
+    transDis(radius, mappedX, mappedY);
 }
 
 /** \brief Calculate the face which the point is on
@@ -364,7 +367,7 @@ inline void Cube2Cyl::calCubeFace(const double& theta, const double& phi) {
     }
 
     // find out which segment the line strikes to
-    phiThreshold = atan2(1.0, 1.0 / cos(normTheta));
+    phiThreshold = atan2(S_RADIUS / cos(normTheta), S_RADIUS);
 
     // in the top segment
     if (phi > phiThreshold) {
@@ -502,7 +505,7 @@ inline bool Cube2Cyl::isDoubleInRange(const double& value, const double& small, 
 Cube2Cyl::Cube2Cyl(void)
     :   pxCamV(0),
         pxCamH(0),
-        diameter(0.0),
+        radius(0.0),
         rdPanoV(0.0),
         rdPanoH(0.0),
         pxPanoSizeV(0),

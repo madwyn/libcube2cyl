@@ -10,6 +10,9 @@
 #define M_PI_4      0.78539816339744830962
 #endif
 
+// sphere radius
+#define S_RADIUS    1.0
+
 #ifdef _MSC_VER
     #ifndef inline
         #define inline __inline
@@ -39,7 +42,7 @@ struct cc_context {
     unsigned int px_cam_h;  /**< The horizontal pixel of a camera */
     unsigned int px_cam_v;  /**< The vertical pixel of a camera */
 
-    double diameter;        /**< The diameter of the sphere for projection */
+    double radius;         /**< The radius of the sphere for projection */
 
     double rd_pano_h;       /**< The horizontal view portion */
     double rd_pano_v;       /**< The vertical view portion */
@@ -59,7 +62,7 @@ struct cc_context {
     double norm_factor_x;   /**< The normalisation factor for x */
     double norm_factor_y;   /**< The normalisation factor for y */
 
-    double size_ratio;      /**< The size ratio of the mapped x and the actual diameter */
+    double size_ratio;      /**< The size ratio of the mapped x and the actual radius */
 
     double t_x;             /**< x coordinate in 3D space */
     double t_y;             /**< y coordinate in 3D space */
@@ -182,7 +185,7 @@ cc_init_full(struct  cc_context *ctx,       const unsigned int px_in_w,
     ctx->px_pano_h = px_pano_h;
     ctx->px_pano_v = px_pano_v;
 
-    ctx->diameter = ((double)px_in_w) / 2.0;
+    ctx->radius = ((double)px_in_w) / 2.0;
 
     // the actual calculation resolution is 10 times bigger than the texture resolution
     ctx->res_cal = M_PI_4 / (double)px_in_w / 10.0;
@@ -260,7 +263,7 @@ __cc_cal_theta_phi(struct cc_context *ctx) {
     ctx->t_theta = ctx->t_x * M_PI;
     ctx->t_phi   = ctx->t_y * M_PI_2;
     // for spherical vertical distortion
-    // phi = asin(y);
+//    ctx->t_phi   = asin(ctx->t_y);
 }
 
 static inline void
@@ -294,7 +297,7 @@ __cc_cal_cube_face(struct cc_context *ctx) {
     }
 
     // find out which segment the line strikes to
-    ctx->phi_threshold = atan2(1.0, 1.0 / cos(ctx->theta_norm));
+    ctx->phi_threshold = atan2(S_RADIUS, S_RADIUS / cos(ctx->theta_norm));
 
     // in the top segment
     if (ctx->t_phi > ctx->phi_threshold) {
@@ -375,7 +378,7 @@ __cc_trans_dis(double *x, double *y, const double *dis) {
  */
 static inline void
 __cc_loc(struct cc_context *ctx, const double axis, const double px, const double py, const double rad) {
-    ctx->size_ratio = ctx->diameter / axis;
+    ctx->size_ratio = ctx->radius / axis;
 
     ctx->cube_x = ctx->size_ratio * px;
     ctx->cube_y = ctx->size_ratio * py;
@@ -384,7 +387,7 @@ __cc_loc(struct cc_context *ctx, const double axis, const double px, const doubl
     __cc_rot_rad(&(ctx->cube_x), &(ctx->cube_y), rad, &(ctx->size_ratio));
 
     // translate
-    __cc_trans_dis(&(ctx->cube_x), &(ctx->cube_y), &(ctx->diameter));
+    __cc_trans_dis(&(ctx->cube_x), &(ctx->cube_y), &(ctx->radius));
 }
 
 /** \brief Calculate the projected coordinates on the cube of x y
@@ -467,4 +470,3 @@ cc_gen_map(struct cc_context *ctx) {
 }
 
 #endif // CUBE_TO_CYL_H_INCLUDED
-
