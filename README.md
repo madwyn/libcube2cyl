@@ -73,7 +73,7 @@ This library takes any valid parameter and deals the ratio changes automatically
 
 ## Building
 
-You don't need to build the project to use libcube2cyl. The building is only for the examples.
+You don't need to build the project to use libcube2cyl. This section is only for the examples.
 
 CMake scripts are provided for easy compilation.
 
