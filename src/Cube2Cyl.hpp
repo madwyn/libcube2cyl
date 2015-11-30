@@ -367,7 +367,7 @@ inline void Cube2Cyl::calCubeFace(const double& theta, const double& phi) {
     }
 
     // find out which segment the line strikes to
-    phiThreshold = atan2(S_RADIUS / cos(normTheta), S_RADIUS);
+    phiThreshold = atan2(S_RADIUS, S_RADIUS / cos(normTheta));
 
     // in the top segment
     if (phi > phiThreshold) {
