@@ -8,10 +8,10 @@ A picture is worth a thousand words.
 
 The input:
 
-| |![alt text](http://paulbourke.net//geometry/transformationprojection/t_test1_00000.jpg)| | |
+| |![alt text](images/TOP.png)| | |
 | ------------- |:-------------:| -----:|--:|---:|
-|![alt text](http://paulbourke.net//geometry/transformationprojection/l_test1_00000.jpg)|![alt text](http://paulbourke.net//geometry/transformationprojection/f_test1_00000.jpg)|![alt text](http://paulbourke.net//geometry/transformationprojection/r_test1_00000.jpg)|![alt text](http://paulbourke.net//geometry/transformationprojection/b_test1_00000.jpg)|
-| |![alt text](http://paulbourke.net//geometry/transformationprojection/d_test1_00000.jpg)| | |
+|![alt text](images/LEFT.png)|![alt text](images/FRONT.png)|![alt text](images/RIGHT.png)|![alt text](images/BACK.png)|
+| |![alt text](images/DOWN.png)| | |
 
 The output:
 
