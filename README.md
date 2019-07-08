@@ -8,14 +8,14 @@ A picture is worth a thousand words.
 
 The input:
 
-| |![alt text](images/TOP.png)| | |
-| ------------- |:-------------:| -----:|--:|---:|
-|![alt text](images/LEFT.png)|![alt text](images/FRONT.png)|![alt text](images/RIGHT.png)|![alt text](images/BACK.png)|
-| |![alt text](images/DOWN.png)| | |
+|| ![alt text](images/TOP.png) |||
+|----- |:-------------:| -----:|-----:|
+| ![alt text](images/LEFT.png)|![alt text](images/FRONT.png)|![alt text](images/RIGHT.png)|![alt text](images/BACK.png) |
+|   | ![alt text](images/DOWN.png)      |   | |
 
 The output:
 
-![alt text](http://paulbourke.net//geometry/transformationprojection/test1_00000.jpg)
+![alt text](images/PANO.png)
 
 ## Basic definitions
 
@@ -44,14 +44,14 @@ Please check /example/demo_c for C version usage.
        There is another more detailed init function you can play with.
      */
     algo.init(640, M_PI, 2.0*M_PI);
-    
+
     // Generate the mapping from panorama to cubic
     algo.genMap();
-    
+
     // Access the dimension of the paranoma image
     unsigned int panoWidth  = algo.pxPanoSizeH;
     unsigned int panoHeight = algo.pxPanoSizeV;
-    
+
     // The next step is to map the pixels from the paranoma back to the source images
     for (i = 0; i < panoWidth; ++i) {
         for (j = 0; j < panoHeight; ++j) {
